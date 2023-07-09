@@ -1,3 +1,5 @@
+github.com/RugiSerl/rayutils v0.0.0-20230709083925-b7b30b665daa h1:ylSfy4O6I0HkBNi/D24QX2T8rDYdteqlBrYzmIibAHk=
+github.com/RugiSerl/rayutils v0.0.0-20230709083925-b7b30b665daa/go.mod h1:P74YgI+Irs4muTQTlXxlmZai4dejrgfYmlGyz/DapOo=
 github.com/aquilax/go-perlin v1.1.0 h1:Gg+3jQ24wT4Y5GI7TCRLmYarzUG0k+n/JATFqOimb7s=
 github.com/aquilax/go-perlin v1.1.0/go.mod h1:z9Rl7EM4BZY0Ikp2fEN1I5mKSOJ26HQpk0O2TBdN2HE=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20230621111137-9def9b04c9ec h1:ynbLvQTItXjR85HdofgD+Cjc4n9tbXAD8ezSmY9tUe0=

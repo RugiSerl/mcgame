@@ -1,6 +1,7 @@
 package app
 
 import (
+	gr "github.com/RugiSerl/rayutils/graphic"
 	"github.com/aquilax/go-perlin"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -28,7 +29,7 @@ const (
 	seed  int64 = 100
 )
 
-func generateChunk() *Chunk {
+func generateChunk(offset gr.Vector2i) *Chunk {
 	//rand.Seed(0)
 	c := new(Chunk)
 	c.blocks = [CHUNK_SIZE][200][CHUNK_SIZE]int{}
@@ -36,7 +37,8 @@ func generateChunk() *Chunk {
 
 	for x := 0; x < CHUNK_SIZE; x++ {
 		for z := 0; z < CHUNK_SIZE; z++ {
-			height := int(0.5*(perlinGen.Noise2D(float64(x)/CHUNK_SIZE, float64(z)/CHUNK_SIZE)+1)*15) + 5
+			blocPositionX, blocPositionZ := float64(x)/CHUNK_SIZE+float64(offset.X), float64(z)/CHUNK_SIZE+float64(offset.Y)
+			height := int(0.5*(perlinGen.Noise2D(blocPositionX, blocPositionZ)+1)*15) + 5
 			c.blocks[x][height][z] = GRASS_BLOCK
 			for height > 0 {
 				height--
@@ -49,12 +51,15 @@ func generateChunk() *Chunk {
 	return c
 }
 
-func (c *Chunk) displayChunk() {
+func (c *Chunk) displayChunk(offset gr.Vector2i) {
 
 	for x := 0; x < len(c.blocks); x++ {
 		for y := 0; y < len(c.blocks[x]); y++ {
 			for z := 0; z < len(c.blocks[x][y]); z++ {
 				if c.blocks[x][y][z] != AIR {
+
+					drawX := x + offset.X*CHUNK_SIZE
+					drawZ := z + offset.Y*CHUNK_SIZE
 
 					faces := faceDrawn{true, true, true, true, true, true}
 
@@ -96,9 +101,9 @@ func (c *Chunk) displayChunk() {
 					}
 					switch c.blocks[x][y][z] {
 					case GRASS_BLOCK:
-						DrawCubeTexture(bottomTex, sideTex, topTex, faces, rl.NewVector3(float32(x), float32(y), float32(z)), 1, 1, 1, rl.White)
+						DrawCubeTexture(bottomTex, sideTex, topTex, faces, rl.NewVector3(float32(drawX), float32(y), float32(drawZ)), 1, 1, 1, rl.White)
 					case DIRT_BLOCK:
-						DrawCubeTexture(bottomTex, bottomTex, bottomTex, faces, rl.NewVector3(float32(x), float32(y), float32(z)), 1, 1, 1, rl.White)
+						DrawCubeTexture(bottomTex, bottomTex, bottomTex, faces, rl.NewVector3(float32(drawX), float32(y), float32(drawZ)), 1, 1, 1, rl.White)
 					}
 
 				}

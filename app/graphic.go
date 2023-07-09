@@ -7,6 +7,7 @@ type faceDrawn struct {
 }
 
 func DrawCubeTexture(bottomTex rl.Texture2D, sideTex rl.Texture2D, topTex rl.Texture2D, faces faceDrawn, position rl.Vector3, width float32, height float32, length float32, color rl.Color) {
+
 	x := position.X
 	y := position.Y
 	z := position.Z

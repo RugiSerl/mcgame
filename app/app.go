@@ -12,7 +12,7 @@ const (
 var (
 	camera                     rl.Camera3D
 	sideTex, bottomTex, topTex rl.Texture2D
-	chunk                      *Chunk
+	chunk                      *ChunkLoader
 )
 
 func Run() {
@@ -39,13 +39,14 @@ func load() {
 	sideTex = rl.LoadTexture("res/side.png")
 
 	camera = rl.Camera3D{}
-	camera.Position = rl.NewVector3(4.0, 2.0, 4.0)
+	camera.Position = rl.NewVector3(4.0, 10, 4.0)
 	camera.Target = rl.NewVector3(0.0, 1.8, 0.0)
 	camera.Up = rl.NewVector3(0.0, 1.0, 0.0)
 	camera.Fovy = 60.0
 	camera.Projection = rl.CameraPerspective
 
-	chunk = generateChunk()
+	chunk = NewChunkLoader()
+	chunk.RenderDistance = 1
 
 }
 func update() {
@@ -56,7 +57,7 @@ func update() {
 	rl.BeginMode3D(camera)
 	rl.ClearBackground(rl.RayWhite)
 
-	chunk.displayChunk()
+	chunk.updateChunck(camera)
 
 	rl.EndMode3D()
 
@@ -93,6 +94,10 @@ func updateCamera() {
 	}
 	if rl.IsKeyDown(rl.KeyW) {
 		movement.X += CAMERA_SPEED * rl.GetFrameTime()
+		if rl.IsKeyDown(rl.KeyLeftControl) {
+			movement.X += CAMERA_SPEED * rl.GetFrameTime()
+
+		}
 	}
 	if rl.IsKeyDown(rl.KeyS) {
 		movement.X -= CAMERA_SPEED * rl.GetFrameTime()
