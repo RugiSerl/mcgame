@@ -8,12 +8,16 @@ import (
 type ChunkLoader struct {
 	chunks         map[gr.Vector2i]*Chunk
 	RenderDistance float32
+	RenderInterval float32
+
+	lastChunkUpdate float32
 }
 
 func NewChunkLoader() *ChunkLoader {
 	c := new(ChunkLoader)
 
 	c.RenderDistance = 2 // default value
+	c.RenderInterval = 0 // default value
 
 	c.chunks = make(map[gr.Vector2i]*Chunk)
 	for x := 0; x < 5; x++ {
@@ -22,8 +26,21 @@ func NewChunkLoader() *ChunkLoader {
 
 		}
 	}
+	c.lastChunkUpdate = 0
 
 	return c
+
+}
+
+func (c *ChunkLoader) Update(camera rl.Camera3D) {
+	c.lastChunkUpdate += rl.GetFrameTime()
+
+	if c.lastChunkUpdate > c.RenderInterval {
+		c.updateChunck(camera)
+		c.lastChunkUpdate = 0
+
+	}
+	c.renderChunks()
 
 }
 
@@ -42,21 +59,19 @@ func (c *ChunkLoader) updateChunck(camera rl.Camera3D) {
 
 	// remove chunks
 	var distance float32
-	for position, chunk := range c.chunks {
+	for position := range c.chunks {
 
 		distance = gr.NewVector2(camera.Position.X, camera.Position.Z).Substract(position.ToVector2().Scale(CHUNK_SIZE)).GetNorm()
 		if distance > CHUNK_SIZE*c.RenderDistance {
 			delete(c.chunks, position)
 		}
 
-		chunk.displayChunk(position)
 	}
 
-	c.renderChunks()
 }
 
 func (c *ChunkLoader) renderChunks() {
 	for position, chunk := range c.chunks {
-		chunk.displayChunk(position)
+		chunk.getMesh(position)
 	}
 }

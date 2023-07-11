@@ -51,15 +51,15 @@ func generateChunk(offset gr.Vector2i) *Chunk {
 	return c
 }
 
-func (c *Chunk) displayChunk(offset gr.Vector2i) {
+func (c *Chunk) getMesh(offset gr.Vector2i) {
 
 	for x := 0; x < len(c.blocks); x++ {
 		for y := 0; y < len(c.blocks[x]); y++ {
 			for z := 0; z < len(c.blocks[x][y]); z++ {
 				if c.blocks[x][y][z] != AIR {
 
-					drawX := x + offset.X*CHUNK_SIZE
-					drawZ := z + offset.Y*CHUNK_SIZE
+					drawX := x + offset.X*CHUNK_SIZE - CHUNK_SIZE/2
+					drawZ := z + offset.Y*CHUNK_SIZE - CHUNK_SIZE/2
 
 					faces := faceDrawn{true, true, true, true, true, true}
 
@@ -99,6 +99,7 @@ func (c *Chunk) displayChunk(offset gr.Vector2i) {
 					} else if c.blocks[x][y][z+1] != AIR {
 						faces.Front = false
 					}
+
 					switch c.blocks[x][y][z] {
 					case GRASS_BLOCK:
 						DrawCubeTexture(bottomTex, sideTex, topTex, faces, rl.NewVector3(float32(drawX), float32(y), float32(drawZ)), 1, 1, 1, rl.White)
@@ -111,4 +112,5 @@ func (c *Chunk) displayChunk(offset gr.Vector2i) {
 			}
 		}
 	}
+
 }

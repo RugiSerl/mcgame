@@ -1,6 +1,9 @@
 package app
 
 import (
+	"fmt"
+	"unsafe"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -13,6 +16,9 @@ var (
 	camera                     rl.Camera3D
 	sideTex, bottomTex, topTex rl.Texture2D
 	chunk                      *ChunkLoader
+	mesh                       rl.Mesh
+	mat                        rl.Material
+	obj                        rl.Model
 )
 
 func Run() {
@@ -45,6 +51,22 @@ func load() {
 	camera.Fovy = 60.0
 	camera.Projection = rl.CameraPerspective
 
+	mesh = rl.GenMeshCube(1, 1, 1)
+
+	vertices := unsafe.Pointer(mesh.Vertices)
+
+	size := unsafe.Sizeof(vertices)
+
+	for i := 0; i < int(mesh.VertexCount); i++ {
+		fmt.Println(*(*float32)(unsafe.Pointer(uintptr(vertices) + size*uintptr(i))))
+
+	}
+
+	mat = rl.LoadMaterialDefault()
+	obj = rl.LoadModelFromMesh(mesh)
+
+	obj.Materials.Maps.Texture = bottomTex
+
 	chunk = NewChunkLoader()
 	chunk.RenderDistance = 1
 
@@ -57,7 +79,10 @@ func update() {
 	rl.BeginMode3D(camera)
 	rl.ClearBackground(rl.RayWhite)
 
-	chunk.updateChunck(camera)
+	chunk.Update(camera)
+
+	// rl.DrawModel(obj, rl.NewVector3(10, 20, 10), 1, rl.NewColor(0, 0, 0, 255))
+	// rl.DrawModelWires(obj, rl.NewVector3(10, 20, 10), 1, rl.White)
 
 	rl.EndMode3D()
 
